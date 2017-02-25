@@ -105,9 +105,7 @@ eg. GET http://127.0.0.1:8000/api
 eg. GET http://127.0.0.1:8000/api/users
 eg. GET http://127.0.0.1:8000/api/users/1
 
-
 ## Running automated tests
-
       
 > TODO: create an artisan command to automate all this.
 
