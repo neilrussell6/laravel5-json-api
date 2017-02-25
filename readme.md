@@ -141,8 +141,8 @@ Assuming the following directory structure:
 4) Create a testing DB in each clean install (in laravel/5.4.x) and make it executable:
 
 ```bash
-touch storage/laravel5_json_api_testing.sqlite
-sudo chmod -R 777 storage/laravel5_json_api_testing.sqlite
+touch database/laravel5_json_api_testing.sqlite
+sudo chmod -R 777 database/laravel5_json_api_testing.sqlite
 ```
 
 5) add the following to .env for each clean install (laravel/5.4.x/.env)
