@@ -1,0 +1,36 @@
+{
+  "name": "neilrussell6/laravel5-json-api",
+  "description": "Laravel 5 JSON API implementation",
+  "version": "v0.0.1",
+  "keywords": [
+    "laravel",
+    "laravel rest api",
+    "laravel json api",
+    "laravel jsonapi",
+    "jsonapi"
+  ],
+  "authors": [
+    {
+      "name": "Neil Russell",
+      "email": "neilrussell6@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.6.4"
+  },
+  "require-dev": {
+    "codeception/codeception": "^2.2",
+    "flow/jsonpath": "^0.3.4",
+    "mockery/mockery": "^0.9.8",
+    "illuminate/support": "^5.4",
+    "illuminate/routing": "^5.4",
+    "illuminate/auth": "^5.4",
+    "illuminate/database": "^5.4",
+    "illuminate/validation": "^5.4",
+    "fzaninotto/faker": "^1.6"
+  },
+  "autoload": {
+    "psr-4": {}
+  }
+}

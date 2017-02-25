@@ -1,0 +1,17 @@
+# codeception
+tests/_output/*
+tests/_support/_generated
+tests/api.suite.yml
+tests/acceptance.suite.yml
+
+# IDE
+/.idea
+
+# laravel
+.env.testing
+
+# misc
+_ignore
+
+# package managers
+/vendor

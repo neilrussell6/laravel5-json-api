@@ -1,0 +1,13 @@
+class_name: ApiTester
+modules:
+    enabled:
+        - \Helper\Api
+        - Asserts
+        - REST:
+            depends: Laravel5
+        - Laravel5:
+            root: ../../../laravel/5.4.x/
+            environment_file: packages/neilrussell6/laravel5-json-api/.env.testing
+            url: http://127.0.0.1:8000
+            cleanup: true
+            run_database_migrations: false
