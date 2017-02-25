@@ -139,7 +139,7 @@ Assuming the following directory structure:
     "psr-4": {
         ...
         "Neilrussell6\\Laravel5JsonApi\\": "packages/neilrussell6/laravel5-json-api/src/",
-        "Neilrussell6\\Laravel5JsonApi\\Testing\\": "packages/neilrussell6/laravel5-json-api/src-testing/"
+        "Neilrussell6\\Laravel5JsonApi\\Seeds\\": "packages/neilrussell6/laravel5-json-api/src-testing/database/seeds/"
     }
     ...
 ```
@@ -161,6 +161,12 @@ DB_TESTING_DATABASE=laravel5_json_api_testing.sqlite
 
 ```bash
 php artisan migrate --path=packages/neilrussell6/laravel5-json-api/src-testing/database/migrations --database=sqlite_testing
+```
+
+or if using in a project where this package was required via composer:
+
+```bash
+php artisan migrate --path=vendor/neilrussell6/laravel5-json-api/src-testing/database/migrations --database=sqlite_testing
 ```
 
 7) Update Codeception config before each separate version test
