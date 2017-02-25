@@ -167,7 +167,15 @@ as follows:
     root: ../../../laravel/5.4.x/
 ```
 
-8) Run tests (in packages/neilrussell6/laravel5-json-api)
+8) Serve project (for Acceptance tests)
+
+eg. in laravel/5.4.x/
+
+```bash
+php artisan serve
+```
+
+9) Run tests (in packages/neilrussell6/laravel5-json-api)
 
 ```bash
 codecept run

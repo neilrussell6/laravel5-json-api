@@ -41,8 +41,6 @@ $I->haveHttpHeader('Accept', 'application/vnd.api+json');
 $I->comment("when we create a user");
 $I->sendPOST('/api/users', Fixtures::get('user'));
 
-var_dump($I->grabResponseAsJson());die();
-
 $I->expect("should create 1 new record");
 $I->assertSame(1, User::all()->count());
 

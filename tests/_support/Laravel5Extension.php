@@ -7,8 +7,10 @@ class Laravel5Extension extends \Codeception\Extension
     ];
 
     public function beforeTest(\Codeception\Event\TestEvent $e) {
-        $laravel5 = $this->getModule('Laravel5');
-        $app = $laravel5->getApplication();
-        $app->make('Illuminate\Database\Eloquent\Factory')->load(__DIR__ . '/../../src-testing/database/factories');
+        if ($this->hasModule('Laravel5')) {
+            $laravel5 = $this->getModule('Laravel5');
+            $app = $laravel5->getApplication();
+            $app->make('Illuminate\Database\Eloquent\Factory')->load(__DIR__ . '/../../src-testing/database/factories');
+        }
     }
 }
