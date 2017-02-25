@@ -148,7 +148,7 @@ sudo chmod -R 777 database/laravel5_json_api_testing.sqlite
 5) add the following to .env for each clean install (laravel/5.4.x/.env)
 
 ```
-DB_TESTING_DATABASE=storage/laravel5_json_api_testing.sqlite
+DB_TESTING_DATABASE=laravel5_json_api_testing.sqlite
 ```
 
 6) Run migrations (in laravel/5.4.x)
