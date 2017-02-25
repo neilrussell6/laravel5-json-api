@@ -63,8 +63,6 @@ class Controller extends JsonApiController
 
 ## Manual testing
 
-eg. in laravel/5.4.x:
-
 > NOTE: if you are using MySQL < 5.7.7 then update the character set in **config/database.php** as follows:
 
 ```php
@@ -78,12 +76,20 @@ eg. in laravel/5.4.x:
             ...
 ```
 
-1) Configure database in **.env**
+eg. in laravel/5.4.x:
+
+1) Configure database in **laravel/5.4.x/.env**
 
 2) Run migrations
 
 ```bash
 php artisan migrate --path=packages/neilrussell6/laravel5-json-api/src-testing/database/migrations
+```
+
+or if using in a project where this package was required via composer:
+
+```bash
+php artisan migrate --path=vendor/neilrussell6/laravel5-json-api/src-testing/database/migrations
 ```
 
 3) Seed database with sample data
@@ -111,10 +117,10 @@ eg. GET http://127.0.0.1:8000/api/users/1
 Assuming the following directory structure:
 
  * laravel
-   * 5.4.x (contains a clean install of Laravel 5.4.x)
- packages
-   * neilrussell6
-     * laravel5-json-api
+    * 5.4.x (contains a clean install of Laravel 5.4.x)
+ * packages
+    * neilrussell6
+        * laravel5-json-api
 
 1) Create a symlink from packages to  laravel/5.4.x/packages.
    Repeat for other versions and Lumen.
