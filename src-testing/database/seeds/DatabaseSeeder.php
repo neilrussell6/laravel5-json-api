@@ -1,7 +1,7 @@
-<?php namespace Neilrussell6\Laravel5JsonApi\Testing\database\seeds;
+<?php namespace Neilrussell6\Laravel5JsonApi\Seeds;
 
-use \Illuminate\Database\Eloquent\Model;
-use \Illuminate\Database\Seeder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\App;
 
 class DatabaseSeeder extends Seeder

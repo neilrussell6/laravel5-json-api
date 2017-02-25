@@ -1,8 +1,8 @@
-<?php namespace Neilrussell6\Laravel5JsonApi\Testing\database\seeds;
+<?php namespace Neilrussell6\Laravel5JsonApi\Seeds;
 
-use \App\Models\User;
-use \Illuminate\Database\Seeder;
-use \Illuminate\Support\Facades\DB;
+use App\Models\User;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class UserTableSeeder extends Seeder
 {

@@ -1,9 +1,9 @@
-<?php namespace Neilrussell6\Laravel5JsonApi\Testing\database\seeds;
+<?php namespace Neilrussell6\Laravel5JsonApi\Seeds;
 
-use \App\Models\Task;
-use \App\Models\User;
-use \Faker\Generator;
-use \Illuminate\Database\Seeder;
+use App\Models\Task;
+use App\Models\User;
+use Faker\Generator;
+use Illuminate\Database\Seeder;
 
 class TaskTableSeeder extends Seeder
 {

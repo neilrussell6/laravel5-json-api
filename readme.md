@@ -5,7 +5,8 @@ Response format:
 
 * [JSON API](http://jsonapi.org/format/)
 
-## Usage
+Usage
+-----
 
 #### Use composer to require packages
 
@@ -61,7 +62,8 @@ class Controller extends JsonApiController
         ...
 ```
 
-## Manual testing
+Manual testing
+--------------
 
 > NOTE: if you are using MySQL < 5.7.7 then update the character set in **config/database.php** as follows:
 
@@ -95,7 +97,7 @@ php artisan migrate --path=vendor/neilrussell6/laravel5-json-api/src-testing/dat
 3) Seed database with sample data
 
 ```bash
-art db:seed --class=Neilrussell6\\Laravel5JsonApi\\Testing\\database\\seeds\\DatabaseSeeder
+art db:seed --class=Neilrussell6\\Laravel5JsonApi\\Seeds\\DatabaseSeeder
 ```
 
 4) Serve project
@@ -110,7 +112,8 @@ eg. GET http://127.0.0.1:8000/api
 eg. GET http://127.0.0.1:8000/api/users
 eg. GET http://127.0.0.1:8000/api/users/1
 
-## Running automated tests
+Running automated tests
+-----------------------
       
 > TODO: create an artisan command to automate all this.
 
@@ -187,7 +190,8 @@ php artisan serve
 codecept run
 ```
 
-## Customisation
+Customisation
+-------------
 
 You can customize request/response handling by overriding Controller methods, see
 
@@ -205,7 +209,8 @@ Response::pagination
 
 see **src/Providers/Laravel5JsonApiServiceProvider.php** for implementation.
 
-## Road Map
+Road Map
+--------
 
 #### JSON API
 
@@ -223,3 +228,8 @@ see **src/Providers/Laravel5JsonApiServiceProvider.php** for implementation.
 * Add support for include queries
 * Add support for sorting
 * Add support for filtering
+
+License
+-------
+
+[MIT](https://github.com/neilrussell6/markdown-it-code-embed/blob/master/LICENSE)
