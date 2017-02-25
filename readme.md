@@ -22,8 +22,7 @@ composer require neilrussell6\laravel5-json-api dev-master
         ...
     'aliases' => [
         ...
-        'JsonApiUtils' => \Neilrussell6\Laravel5JsonApi\Facades\JsonApiUtils::class,
-        'JsonApiResponseMacroUtils' => \Neilrussell6\Laravel5JsonApi\Facades\JsonApiResponseMacroUtils::class,
+        'JsonApiUtils' => \Neilrussell6\Laravel5JsonApi\Facades\JsonApiUtils::class
         ...
 ```
 

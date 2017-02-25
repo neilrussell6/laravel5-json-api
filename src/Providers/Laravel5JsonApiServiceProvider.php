@@ -83,18 +83,9 @@ class Laravel5JsonApiServiceProvider extends ServiceProvider
      */
     public function register()
     {
-//        $this->mergeConfigFrom(
-//            __DIR__ . '/../config/json-api.php', 'neilrussell6-json-api-app'
-//        );
-
         App::bind('jsonapiutils', function()
         {
             return new \Neilrussell6\Laravel5JsonApi\Utils\JsonApiUtils;
-        });
-
-        App::bind('jsonapiresponsemacroutils', function()
-        {
-            return new \Neilrussell6\Laravel5JsonApi\Utils\JsonApiResponseMacroUtils;
         });
     }
 }
