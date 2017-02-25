@@ -79,7 +79,7 @@ eg. in laravel/5.4.x:
             ...
 ```
 
-1) Config database in **.env**
+1) Configure database in **.env**
 
 2) Run migrations
 
@@ -108,6 +108,7 @@ eg. GET http://127.0.0.1:8000/api/users/1
 
 ## Running automated tests
 
+      
 > TODO: create an artisan command to automate all this.
 
 Assuming the following directory structure:
@@ -131,8 +132,10 @@ Assuming the following directory structure:
 "autoload-dev": {
     "psr-4": {
         ...
-        "Neilrussell6\\Laravel5JsonApi\\": "packages/neilrussell6/laravel5-json-api/src/"
-        ...
+        "Neilrussell6\\Laravel5JsonApi\\": "packages/neilrussell6/laravel5-json-api/src/",
+        "Neilrussell6\\Laravel5JsonApi\\Testing\\": "packages/neilrussell6/laravel5-json-api/src-testing/"
+    }
+    ...
 ```
 
 4) Create a testing DB in each clean install (in laravel/5.4.x) and make it executable:
