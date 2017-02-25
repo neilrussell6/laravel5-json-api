@@ -204,3 +204,22 @@ Response::pagination
 ```
 
 see **src/Providers/Laravel5JsonApiServiceProvider.php** for implementation.
+
+## Road Map
+
+#### JSON API
+
+* Add support to update or create relationships through the relationships object in a request like this:
+  UPDATE /articles/1
+  {
+    "data": [
+      "relationships": {
+        "comments": [ ... ],
+        "author": { "type": "users", "id": "123" },
+      }
+    }
+  }  
+* Add support for paginating related resources
+* Add support for include queries
+* Add support for sorting
+* Add support for filtering
