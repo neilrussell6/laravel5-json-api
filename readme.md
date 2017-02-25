@@ -10,7 +10,7 @@ Response format:
 #### Use composer to require packages
 
 ```bash
-composer require neilrussell6\laravel5-json-api
+composer require neilrussell6\laravel5-json-api dev-master
 ```
 
 #### Update config/app.php
