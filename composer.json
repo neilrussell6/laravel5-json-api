@@ -28,7 +28,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Neilrussell6\\Laravel5JsonApi\\": "src/"
+      "Neilrussell6\\Laravel5JsonApi\\": "src/",
+      "Neilrussell6\\Laravel5JsonApi\\Testing\\": "src-testing/"
     }
   }
 }

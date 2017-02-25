@@ -90,7 +90,7 @@ php artisan migrate --path=packages/neilrussell6/laravel5-json-api/src-testing/d
 3) Seed database with sample data
 
 ```bash
-php artisan migrate:refresh --path=packages/neilrussell6/laravel5-json-api/src-testing/database/migrations
+art db:seed --class=Neilrussell6\\Laravel5JsonApi\\Testing\\database\\seeds\\DatabaseSeeder
 ```
 
 4) Serve project
