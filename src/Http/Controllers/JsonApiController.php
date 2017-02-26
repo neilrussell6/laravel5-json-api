@@ -53,7 +53,7 @@ class JsonApiController extends Controller
             return Response::collection($request, $paginator->getCollection(), $this->model, 200);
         }
 
-        // otherwise return paginated response
+        // otherwise return paginated Response
         return Response::pagination($request, $paginator, $this->model, 200);
     }
 
@@ -135,7 +135,7 @@ class JsonApiController extends Controller
 
         // respond with errors
         if (!empty($request_data_validation['errors'])) {
-            return response([ 'errors' => $request_data_validation['errors'] ], $request_data_validation['error_code']);
+            return Response::make([ 'errors' => $request_data_validation['errors'] ], $request_data_validation['error_code']);
         }
 
         // create & find resource
