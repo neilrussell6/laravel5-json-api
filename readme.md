@@ -53,6 +53,13 @@ Route::group(['middleware' => ['jsonapi'], 'namespace' => 'Api'], function () {
     ...
 ```
 
+And if you're using JWTAuth or anything else that returns single error strings then also add 'jsonapi.jwt' middleware to **routes/api.php** eg.
+
+```php
+Route::group(['middleware' => ['jsonapi.jwt']...
+    ...
+```
+
 #### Extend JsonApiController
 
 eg. if your API will use **app/Http/Controllers/Controller.php** asa base controller, then update as follows:
