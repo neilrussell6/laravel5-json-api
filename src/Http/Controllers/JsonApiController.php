@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 use Neilrussell6\Laravel5JsonApi\Facades\JsonApiUtils;
@@ -168,7 +169,10 @@ class JsonApiController extends Controller
     public function update (Request $request, $id)
     {
         $request_data = $request->all();
-        $request_data_validation = $this->validateRequestResourceObject($request_data['data'], $this->model, $id);
+
+        // only validate attributes provided (ignore missing)
+        $validation_rules = array_keys($request_data['data']['attributes']);
+        $request_data_validation = $this->validateRequestResourceObject($request_data['data'], $this->model, $id, true, $validation_rules);
 
         // respond with error
         if (!empty($request_data_validation['errors'])) {
@@ -335,9 +339,10 @@ class JsonApiController extends Controller
      * @param $model
      * @param null $id
      * @param bool $validate_attributes
+     * @param null $validation_rules
      * @return array
      */
-    protected function validateRequestResourceObject ($resource_object, $model, $id = null, $validate_attributes = true)
+    protected function validateRequestResourceObject ($resource_object, $model, $id = null, $validate_attributes = true, $validation_rules = null)
     {
         $result = [
             'errors' => [],
@@ -368,7 +373,17 @@ class JsonApiController extends Controller
 
             // validate attributes
             $attributes = array_key_exists('attributes', $resource_object) ? $resource_object['attributes'] : [];
-            $validator = Validator::make($attributes, $model->rules, $model->messages);
+            $rules = $model->rules;
+
+            // filter rules if validation rules provided
+            if (!is_null($validation_rules)) {
+                $rule_collection = new Collection($model->rules);
+                $rules = $rule_collection->filter(function ($value, $key) use ($validation_rules) {
+                    return in_array($key, $validation_rules);
+                })->toArray();
+            }
+
+            $validator = Validator::make($attributes, $rules, $model->messages);
 
             if ($validator->fails()) {
                 $result['errors'] = JsonApiUtils::makeErrorObjectsFromAttributeValidationErrors($validator->errors()->getMessages(), 422);

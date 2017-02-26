@@ -43,9 +43,15 @@ $I->haveHttpHeader('Accept', 'application/vnd.api+json');
 
 $user_ids = array_column(User::all()->toArray(), 'id');
 $user_1_id = $user_ids[0];
-$user = Fixtures::get('user');
-$user['data']['id'] = $user_1_id;
-$user['data']['attributes']['name'] = "BBB";
+$user = [
+    'data' => [
+        'id' => $user_1_id,
+        'type' => 'users',
+        'attributes' => [
+            'name' => "BBB",
+        ]
+    ]
+];
 
 // ----------------------------------------------------
 
@@ -108,9 +114,15 @@ $I->seeResponseJsonPathRegex('$.data.relationships.projects.links.related', '/^h
 
 $project_ids = array_column(Project::all()->toArray(), 'id');
 $project_1_id = $project_ids[0];
-$project = Fixtures::get('project');
-$project['data']['id'] = $project_1_id;
-$project['data']['attributes']['name'] = "BBB";
+$project = [
+    'data' => [
+        'id' => $project_1_id,
+        'type' => 'projects',
+        'attributes' => [
+            'name' => "BBB",
+        ]
+    ]
+];
 
 // ----------------------------------------------------
 
@@ -175,9 +187,15 @@ $I->seeResponseJsonPathRegex('$.data.relationships.tasks.links.related', '/^http
 
 $task_ids = array_column(Task::all()->toArray(), 'id');
 $task_1_id = $task_ids[0];
-$task = Fixtures::get('task');
-$task['data']['id'] = $task_1_id;
-$task['data']['attributes']['name'] = "BBB";
+$task = [
+    'data' => [
+        'id' => $task_1_id,
+        'type' => 'tasks',
+        'attributes' => [
+            'name' => "BBB",
+        ]
+    ]
+];
 
 // ----------------------------------------------------
 
