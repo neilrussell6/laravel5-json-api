@@ -88,7 +88,7 @@ class JsonApiUtils
             ];
         }, array_keys($attribute_validation_error_messages));
 
-        return self::makeErrorObjects($error_messages, $http_code);
+        return $this->makeErrorObjects($error_messages, $http_code);
     }
 
     /**
@@ -150,7 +150,7 @@ class JsonApiUtils
 
             // build relationships objects
             $relationships = array_reduce($model->default_includes, function ($carry, $default_include) use ($base_url) {
-                return array_merge($carry, [ $default_include => self::makeRelationshipObject($default_include, $base_url) ]);
+                return array_merge($carry, [ $default_include => $this->makeRelationshipObject($default_include, $base_url) ]);
             }, []);
 
             $result = array_merge($result, [ 'relationships' => $relationships ]);
@@ -265,7 +265,7 @@ class JsonApiUtils
      */
     public function makeTopLevelPaginationLinksObject (LengthAwarePaginator $paginator, $full_base_url, $base_url, $query_params)
     {
-        $result = self::makeTopLevelLinksObject($full_base_url);
+        $result = $this->makeTopLevelLinksObject($full_base_url);
 
         $indices = [
             'current'   => $paginator->currentPage(),
