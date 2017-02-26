@@ -1,6 +1,7 @@
 <?php namespace Neilrussell6\Laravel5JsonApi\Utils;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 /**
@@ -30,6 +31,7 @@ class JsonApiUtils
 
         return array_search($max_count, $statuses);
     }
+
     /**
      * creates an array of error objects error object for JSON API formatted response
      * http://jsonapi.org/format/#error-objects
@@ -213,6 +215,29 @@ class JsonApiUtils
             ]
         ];
 
+        // validate response
+
+        // both data & errors
+        //
+        // "The members data and errors MUST NOT coexist in the
+        // same document."
+        if (array_key_exists('data', $response) && array_key_exists('errors', $response)) {
+            return false;
+        }
+
+        // no data, errors or meta properties
+        //
+        // "A document MUST contain at least one of the
+        // following top-level members:
+        //  - data: the document’s “primary data”
+        //  - errors: an array of error objects
+        //  - meta: a meta object that contains non-standard
+        //    meta-information."
+        if (!array_key_exists('data', $response) && !array_key_exists('errors', $response) && !array_key_exists('meta', $response)) {
+            return false;
+        }
+
+        // response is valid so merge and return
         return array_merge_recursive($default_content, $response);
     }
 
@@ -311,5 +336,112 @@ class JsonApiUtils
                 'total_pages'   => $paginator->lastPage(),
             ]
         ];
+    }
+
+    /**
+     * validate request and return an array of errors
+     * TODO: add functional/unit test
+     *
+     * @param Request $request
+     * @return array
+     */
+    public function validateJsonApiRequest(Request $request)
+    {
+        $regex_json_api_media_type_without_params = '/application\/vnd\.api\+json(\,.*)?$/';
+
+        // Missing request Content-Type header
+        if (!$request->hasHeader('Content-Type')) {
+
+            return JsonApiUtils::makeErrorObjects([[
+                'title' => "Invalid request missing Content-Type header",
+                'detail' => "Clients MUST send all JSON API data in request documents with the header Content-Type: application/vnd.api+json without any media type parameters."
+            ]], 400);
+        }
+
+        // Invalid request Content-Type header
+        if ($request->header('Content-Type') !== 'application/vnd.api+json') {
+
+            return JsonApiUtils::makeErrorObjects([[
+                'title' => "Invalid request Content-Type header",
+                'detail' => "Clients MUST send all JSON API data in request documents with the header Content-Type: application/vnd.api+json without any media type parameters."
+            ]], 415);
+        }
+
+        // Invalid request Accept header
+        if ($request->hasHeader('Accept') && !preg_match($regex_json_api_media_type_without_params, $request->header('Accept'))) {
+
+            return JsonApiUtils::makeErrorObjects([[
+                'title' => "Invalid request Accept header",
+                'detail' => "Clients that include the JSON API media type in their Accept header MUST specify the media type there at least once without any media type parameters."
+            ]], 406);
+        }
+
+        // if request method requires request data
+        if (in_array($request->method(), ['POST', 'PATCH'])) {
+
+            $request_data = $request->all();
+            $error_code = 422;
+
+            // validate request data : data
+            if (!array_key_exists('data', $request_data)) {
+
+                return JsonApiUtils::makeErrorObjects([[
+                    'title' => "Invalid request",
+                    'detail' => "The request MUST include a single resource object as primary data."
+                ]], $error_code);
+            }
+
+            // single resource object
+            else if (count($request_data['data']) > 0 && is_string(array_keys($request_data['data'])[0])) {
+                return $this->validateRequestResourceObject($request_data['data'], $error_code, $request->method());
+            }
+
+            // indexed array of resource objects
+            else {
+                return array_reduce($request_data['data'], function ($carry, $resource_object) use ($error_code, $request) {
+                    return array_merge_recursive($carry, $this->validateRequestResourceObject($resource_object, $error_code, $request->method()));
+                }, []);
+            }
+        }
+
+        return [];
+    }
+
+    /**
+     * validate request resource object
+     * TODO: add functional/unit test
+     *
+     * @param $resource_object
+     * @param $error_code
+     * @param $request_method
+     * @return array
+     */
+    public function validateRequestResourceObject ($resource_object, $error_code, $request_method) {
+
+        $errors = [];
+
+        // validate data.type
+        if (!array_key_exists('type', $resource_object)) {
+
+            $errors = JsonApiUtils::makeErrorObjects([[
+                'title' => "Invalid request",
+                'detail' => "The request resource object MUST contain at least a type member."
+            ]], $error_code);
+        }
+
+        // if request method requires request data
+        else if (in_array($request_method, ['PATCH'])) {
+
+            // validate data.id
+            if (!array_key_exists('id', $resource_object)) {
+
+                $errors = JsonApiUtils::makeErrorObjects([[
+                    'title' => "Invalid request",
+                    'detail' => "The request resource object for a PATCH request MUST contain an id member."
+                ]], $error_code);
+            }
+        }
+
+        return $errors;
     }
 }

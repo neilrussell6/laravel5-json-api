@@ -22,7 +22,7 @@ class Laravel5JsonApiServiceProvider extends ServiceProvider
     public function boot (ResponseFactory $factory)
     {
         $this->publishes([
-            __DIR__ . '/../config/json-api.php' => config_path('json-api.php')
+            __DIR__ . '/../config/jsonapi.php' => config_path('jsonapi.php')
         ], 'config');
 
         $factory->macro('collection', function (Request $request, Collection $collection, $model, $status = 200, $include_resource_object_links = true, $is_minimal = false) use ($factory) {

@@ -40,11 +40,17 @@ $app->singleton(
 #### Update app/Http/Kernel.php
 
 ```php
-    protected $middleware = [
+    protected $routeMiddleware = [
         ...
-        \Neilrussell6\Laravel5JsonApi\Http\Middleware\BuildJsonApiResponse::class,
-        \Neilrussell6\Laravel5JsonApi\Http\Middleware\ValidateJsonApiRequest::class,
+        'jsonapi' => \Neilrussell6\Laravel5JsonApi\Http\Middleware\JsonApi::class,
         ...
+```
+
+And add 'jsonapi' middleware to **routes/api.php** eg.
+
+```php
+Route::group(['middleware' => ['jsonapi'], 'namespace' => 'Api'], function () {
+    ...
 ```
 
 #### Extend JsonApiController

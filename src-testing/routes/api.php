@@ -18,7 +18,12 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 
-Route::group(['middleware' => ['api'], 'namespace' => 'Api'], function () {
+$api_middleware = [
+    'api',
+    'jsonapi'
+];
+
+Route::group(['middleware' => $api_middleware, 'namespace' => 'Api'], function () {
 
     Route::get('', 'ApiController@index');
 
