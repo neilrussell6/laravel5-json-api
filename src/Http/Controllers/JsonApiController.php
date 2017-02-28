@@ -142,6 +142,14 @@ class JsonApiController extends Controller
         $result = $this->model->create($request_data['data']['attributes']);
         $resource = $this->model->findOrFail($result->id);
 
+        // update relationships
+        if (array_key_exists('relationships', $request_data['data'])) {
+            $relationships = new Collection($request_data['data']['relationships']);
+            $relationships->each(function($relationship, $key) use ($resource) {
+                $this->updateRelatedHelper($relationship['data'], $key, $resource, true);
+            });
+        }
+
         // return newly created resource
         return Response::item($request, $resource->toArray(), $this->model, 201);
     }
@@ -205,21 +213,44 @@ class JsonApiController extends Controller
         // get target relationship name (eg. owner, author)
         $relationship_name = array_values(array_slice($request->segments(), -1))[0];
 
-        // fetch primary & related resources
+        // fetch primary resource
         $primary_entity    = $this->model->findOrFail($id);
+
+        // update related
+        $result = $this->updateRelatedHelper($request_data['data'], $relationship_name, $primary_entity, $should_overwrite);
+        return Response::make($result['response'], $result['status_code']);
+    }
+
+    /**
+     * Helper that handles the updating of a related entity
+     *
+     * @param $request_data
+     * @param $relationship_name
+     * @param $primary_entity
+     * @param $should_overwrite
+     * @return array
+     */
+    protected function updateRelatedHelper ($request_data, $relationship_name, $primary_entity, $should_overwrite)
+    {
+        $result = [
+            'response' => [],
+            'status_code' => 500
+        ];
+
+        // fetch primary & related resources
         $related           = $primary_entity->{$relationship_name}();
         $related_model     = $related->getRelated();
 
         // validate request data
         // ... single resource object
-        if (count($request_data['data']) > 0 && is_string(array_keys($request_data['data'])[0])) {
-            $request_data_validation = $this->validateRequestResourceObject($request_data['data'], $related_model, null, false);
+        if (count($request_data) > 0 && is_string(array_keys($request_data)[0])) {
+            $request_data_validation = $this->validateRequestResourceObject($request_data, $related_model, null, false);
         }
 
         // ... indexed array of resource objects
         else {
 
-            $request_data_validation = array_reduce($request_data['data'], function ($carry, $resource_object) use ($related_model) {
+            $request_data_validation = array_reduce($request_data, function ($carry, $resource_object) use ($related_model) {
                 $validation = $this->validateRequestResourceObject($resource_object, $related_model, null, false);
                 return !empty($validation['errors']) ? array_merge_recursive($carry, $validation) : $carry;
             }, [ 'errors' => [] ]);
@@ -228,20 +259,23 @@ class JsonApiController extends Controller
         // respond with error
         if (!empty($request_data_validation['errors'])) {
             $predominant_error_code = JsonApiUtils::getPredominantErrorStatusCode($request_data_validation['error_code'], 422);
-            return Response::make([ 'errors' => $request_data_validation['errors'] ], $predominant_error_code);
+            return [
+                'response' => [ 'errors' => $request_data_validation['errors'] ],
+                'status_code' => $predominant_error_code
+            ];
         }
 
         // update relationship
         // ... single resource object
-        else if (count($request_data['data']) > 0 && is_string(array_keys($request_data['data'])[0])) {
-            $related_entity = $related_model->find($request_data['data']['id']);
+        else if (count($request_data) > 0 && is_string(array_keys($request_data)[0])) {
+            $related_entity = $related_model->find($request_data['id']);
             $primary_entity->{$relationship_name}()->associate($related_entity);
         }
 
         // ... indexed array of resource objects
         else {
 
-            $related_data = array_reduce($request_data['data'], function ($carry, $resource_object) {
+            $related_data = array_reduce($request_data, function ($carry, $resource_object) {
                 $carry[ $resource_object['id'] ] = array_key_exists('attributes', $resource_object) ? $resource_object['attributes'] : [];
                 return $carry;
             }, []);
@@ -250,11 +284,17 @@ class JsonApiController extends Controller
         }
 
         if (!$primary_entity->save()) {
-            return Response::make([ 'errors' => [ "Could not update related resource" ] ], 500 );
+            return [
+                'response' => [ 'errors' => [ "Could not update related resource" ] ],
+                'status_code' => 500
+            ];
         }
 
         // return no content
-        return Response::make([], 204);
+        return [
+            'response' => [],
+            'status_code' => 204
+        ];
     }
 
     /**
