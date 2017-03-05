@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Config;
 use Codeception\Util\HttpCode;
 
 $I = new ApiTester($scenario);
@@ -12,6 +13,9 @@ $I = new ApiTester($scenario);
 // * test response codes and structure
 // 
 ///////////////////////////////////////////////////////
+
+// disable ACL access check
+Config::set('jsonapi.acl.check_access', false);
 
 // ====================================================
 // 415 UNSUPPORTED_MEDIA_TYPE

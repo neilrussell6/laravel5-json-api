@@ -1,9 +1,10 @@
 <?php
 
-use App\Models\Project;
-use App\Models\User;
+use Illuminate\Support\Facades\Config;
 use Codeception\Util\Fixtures;
 use Codeception\Util\HttpCode;
+use App\Models\Project;
+use App\Models\User;
 
 $I = new ApiTester($scenario);
 
@@ -39,6 +40,9 @@ $project_1_id = $project_ids[0];
 // * test response codes & structure
 //
 ///////////////////////////////////////////////////////
+
+// disable ACL access check
+Config::set('jsonapi.acl.check_access', false);
 
 $I->haveHttpHeader('Content-Type', 'application/vnd.api+json');
 $I->haveHttpHeader('Accept', 'application/vnd.api+json');
@@ -82,6 +86,7 @@ $I->sendMultiple($requests, function($request) use ($I) {
 
     $I->comment("given we make a {$request[0]} request to {$request[1]}");
 
+    
     // ----------------------------------------------------
     // 1) create resource -> 201 Created
     //

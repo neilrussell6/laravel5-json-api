@@ -94,6 +94,46 @@ class JsonApiUtils
     }
 
     /**
+     * Makes a JSON API error object using the error_messages array at the given config location.
+     *
+     * @param $config_location (eg. jsonapi.jwt or jsonapi.acl)
+     * @param $error_message_key
+     * @param int $default_status_code
+     * @param string $default_title
+     * @param string $default_detail
+     * @return array
+     */
+    public function makeErrorObjectWithConfig($config_location, $error_message_key, $default_status_code = 400, $default_title = "Bad Request", $default_detail = "An error occurred") {
+
+        // status code
+
+        $config_value = config("{$config_location}.error_messages.status_code");
+        $status_code = is_string($config_value) ? $config_value : config("{$config_location}.error_messages.status_code.{$error_message_key}");
+
+        // title
+
+        $config_value = config("{$config_location}.error_messages.title");
+        $title = is_string($config_value) ? $config_value : config("{$config_location}.error_messages.title.{$error_message_key}");
+
+        // detail
+
+        $config_value = config("{$config_location}.error_messages.detail");
+        $detail = is_string($config_value) ? $config_value : config("{$config_location}.error_messages.detail.{$error_message_key}");
+
+        // defaults
+
+        if (is_null($status_code)) { $status_code = $default_status_code; }
+        if (is_null($title)) { $title = $default_title; }
+        if (is_null($detail)) { $detail = $default_detail; }
+
+        return [
+            'status' => $status_code,
+            'title' => $title,
+            'detail' => $detail,
+        ];
+    }
+
+    /**
      * creates a relationship object for JSON API formatted response
      *
      * @param $sub_resource_name

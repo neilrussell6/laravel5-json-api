@@ -1,5 +1,11 @@
 <?php namespace Neilrussell6\Laravel5JsonApi\Http\Controllers;
 
+use App\Models\Project;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
@@ -220,7 +226,7 @@ class JsonApiController extends Controller
 
         //------------------------------------------------
         // response
-        //-----------------------------------------------4-
+        //------------------------------------------------
 
         // if no pagination arguments are provided,
         // and the result count falls within the PAGINATION_LIMIT
@@ -283,11 +289,9 @@ class JsonApiController extends Controller
         $include_resource_object_links = true;
 
         // ACL
-        if (!is_null(config('jsonapi.acl.check_access')) && config('jsonapi.acl.check_access') !== false) {
-            $errors = JsonApiAclUtils::accessCheck($request->route()->getName(), Auth::user(), $related_resource);
-            if (!empty($errors)) {
-                return Response::make([ 'errors' => $errors ], 403);
-            }
+        $errors = JsonApiAclUtils::accessCheck($request->route()->getName(), Auth::user(), $related_resource);
+        if (!empty($errors)) {
+            return Response::make([ 'errors' => $errors ], 403);
         }
 
         return Response::item($request, $related_data, $related_model, 200, $include_resource_object_links, $is_minimal);
@@ -326,12 +330,20 @@ class JsonApiController extends Controller
         // TODO: implement as one query so that if the relationship update fails the whole request fails
         // issue: at this point the primary resource is already created, so if this part fails we have partially completed a request
 
-        if (array_key_exists('relationships', $request_data['data'])) {
-            $relationships = new Collection($request_data['data']['relationships']);
-            $relationships->each(function($relationship, $key) use ($resource) {
-                $this->updateRelatedHelper($relationship['data'], $key, $resource, true);
-            });
-        }
+//        if (array_key_exists('relationships', $request_data['data'])) {
+//            $relationships = $request_data['data']['relationships'];
+//
+//            foreach ($relationships as $relationship_name => $relationship) {
+//
+//                // update
+//                $result = $this->updateRelatedHelper($request, $relationships[$relationship_name]['data'], $relationship_name, $resource, true);
+//
+//                // if errored
+//                if (array_key_exists('errors', $result['response'])) {
+//                    return Response::make($result['response'], $result['status_code']);
+//                }
+//            }
+//        }
 
         // return newly created resource
         return Response::item($request, $resource->toArray(), $this->model, 201);
@@ -433,8 +445,6 @@ class JsonApiController extends Controller
      */
     protected function updateRelatedHelper ($request, $relationship_data, $relationship_name, $primary_resource, $should_overwrite)
     {
-        $request_data = $request->all();
-
         //------------------------------------------------
         // related resource
         //------------------------------------------------
@@ -454,7 +464,20 @@ class JsonApiController extends Controller
         // ... indexed array of related resource objects
         else {
 
-            $request_data_validation = array_reduce($request_data['data'], function ($carry, $resource_object) use ($related_model) {
+//            // unsupported request
+//            // TODO: test
+//            return [
+//                'response' => [
+//                    'errors' => JsonApiUtils::makeErrorObjects([[
+//                        'title' => "Method not allowed",
+//                        'detail' => "The requested method is not allowed by this endpoint."
+//                    ]], 405)
+//                ],
+//                'status_code' => 405
+//            ];
+
+            // TODO: should we support this as follows?
+            $request_data_validation = array_reduce($request_data, function ($carry, $resource_object) use ($related_model) {
                 $validation = $this->validateRequestResourceObject($resource_object, $related_model, null, false);
                 return !empty($validation['errors']) ? array_merge_recursive($carry, $validation) : $carry;
             }, [ 'errors' => [] ]);
@@ -482,11 +505,11 @@ class JsonApiController extends Controller
             // 2) do we have permission to update that relationship to this related resource (eg. do we own the project we are changing this task's project to?)
             $related_resource = $related_model->find($relationship_data['id']);
 
+            // map route name to related permission required (eg. setting Project Owner during projects.store requires a projects.relationships.owner.update permission)
+            $related_permission_required = JsonApiAclUtils::getRelatedPermission($request->route()->getName(), $relationship_name);
+
             // ACL
             if (!is_null(config('jsonapi.acl.check_access')) && config('jsonapi.acl.check_access') !== false) {
-
-                // map route name to related permission required (eg. setting Project Owner during projects.store requires a projects.relationships.owner.update permission)
-                $related_permission_required = JsonApiAclUtils::getRelatedPermission($request->route()->getName(), $relationship_name);
 
                 $errors = JsonApiAclUtils::accessCheck($related_permission_required, Auth::user(), $related_resource);
 
@@ -506,12 +529,25 @@ class JsonApiController extends Controller
         // ... indexed array of related resource objects
         else {
 
-            $related_data = array_reduce($request_data['data'], function ($carry, $resource_object) {
-                $carry[ $resource_object['id'] ] = array_key_exists('attributes', $resource_object) ? $resource_object['attributes'] : [];
-                return $carry;
-            }, []);
+            // unsupported request
+            // TODO: test
+            return [
+                'response' => [
+                    'errors' => JsonApiUtils::makeErrorObjects([[
+                        'title' => "Method not allowed",
+                        'detail' => "The requested method is not allowed by this endpoint."
+                    ]], 405)
+                ],
+                'status_code' => 405
+            ];
 
-            $primary_resource->{$relationship_name}()->sync($related_data, $should_overwrite);
+            // TODO: should we support this as follows?
+//            $related_data = array_reduce($request_data, function ($carry, $resource_object) {
+//                $carry[ $resource_object['id'] ] = array_key_exists('attributes', $resource_object) ? $resource_object['attributes'] : [];
+//                return $carry;
+//            }, []);
+
+//            $primary_resource->{$relationship_name}()->sync($related_data, $should_overwrite);
         }
 
         if (!$primary_resource->save()) {
@@ -569,8 +605,6 @@ class JsonApiController extends Controller
      */
     public function destroyRelated (Request $request, $id)
     {
-        $request_data = $request->all();
-
         // fetch primary resource
         $primary_resource = $this->model->findOrFail($id);
 
@@ -605,8 +639,17 @@ class JsonApiController extends Controller
 
             $related_ids = array_column($request_data['data'], 'id');
             $primary_resource->{$relationship_name}()->detach($related_ids);
-        }
 
+//            // unsupported request
+//            // TODO: test
+//            return Response::make([
+//                'errors' => JsonApiUtils::makeErrorObjects([[
+//                    'title' => "Method not allowed",
+//                    'detail' => "The requested method is not allowed by this endpoint."
+//                ]], 405)
+//            ], 405);
+        }
+        
         if (!$primary_resource->save()) {
             return [
                 'response' => [ 'errors' => [ "Could not update related resource" ] ],

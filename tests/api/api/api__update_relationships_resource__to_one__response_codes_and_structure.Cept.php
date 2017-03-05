@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Config;
 use Codeception\Util\Fixtures;
 use Codeception\Util\HttpCode;
 use App\Models\Project;
@@ -56,6 +57,9 @@ $task_2_id = factory(Task::class, 1)->create(['user_id' => $user_2_id])->toArray
 //
 ///////////////////////////////////////////////////////
 
+// disable ACL access check
+Config::set('jsonapi.acl.check_access', false);
+
 $I->haveHttpHeader('Content-Type', 'application/vnd.api+json');
 $I->haveHttpHeader('Accept', 'application/vnd.api+json');
 
@@ -96,6 +100,7 @@ $new_owner = [ 'data' => [ 'type' => 'users', 'id' => $user_3_id ] ];
 $new_project = [ 'data' => [ 'type' => 'projects', 'id' => $project_2_id ] ];
 
 $requests = [
+//    [ 'PATCH', "/api/projects/{$project_1_id}/owner", $new_owner ],
     [ 'PATCH', "/api/projects/{$project_1_id}/relationships/owner", $new_owner ],
     [ 'PATCH', "/api/projects/{$project_2_id}/relationships/owner", $new_owner ],
     [ 'PATCH', "/api/tasks/{$task_1_id}/relationships/owner", $new_owner ],

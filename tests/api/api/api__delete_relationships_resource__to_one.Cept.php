@@ -1,7 +1,7 @@
 <?php
 
 // ----------------------------------------------------
-// N o DELETE requests for 'to one' relationships, as
+// No DELETE requests for 'to one' relationships, as
 // they would have the same behaviour as a PATCH
 // request.
 // 

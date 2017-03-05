@@ -1,9 +1,12 @@
 <?php
-//
+
+//use \Mockery as m;
+//use Illuminate\Support\Facades\Auth;
+//use Neilrussell6\Laravel5JsonApi\Facades\JsonApiAclUtils;
+//use Codeception\Util\Fixtures;
 //use App\Models\Project;
 //use App\Models\Task;
 //use App\Models\User;
-//use Codeception\Util\Fixtures;
 //
 //$I = new ApiTester($scenario);
 //
@@ -33,6 +36,10 @@
 //// * test top level response structure
 ////
 /////////////////////////////////////////////////////////
+//
+//// mock user & access check
+//Auth::shouldReceive('user')->andReturn($user = m::mock('Illuminate\Database\Eloquent\Model'));
+//JsonApiAclUtils::shouldReceive('accessCheck')->andReturn([]);
 //
 //$I->haveHttpHeader('Content-Type', 'application/vnd.api+json');
 //$I->haveHttpHeader('Accept', 'application/vnd.api+json');

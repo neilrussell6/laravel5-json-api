@@ -2,6 +2,7 @@
 
 use Closure;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Neilrussell6\Laravel5JsonApi\Exceptions\JsonApiResponseException;
 use Neilrussell6\Laravel5JsonApi\Facades\JsonApiUtils;
 
@@ -48,18 +49,18 @@ class JsonApi
         }
 
         if (!is_null($content)) {
-            $content = JsonApiUtils::makeResponseObject($content);
+            $response_object = JsonApiUtils::makeResponseObject($content);
 
             // is response is invalid, then throw exception
-            if (!$content) {
+            if (!$response_object) {
                 throw new JsonApiResponseException("Response is not valid according to JSON API specs", 500);
             }
 
             if (get_class($response) === JsonResponse::class) {
-                $content = json_encode($content);
+                $response_object = json_encode($response_object);
             }
 
-            $response->setContent($content);
+            $response->setContent($response_object);
         }
 
         // Add JSON API response headers

@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Config;
 use Codeception\Util\Fixtures;
 use App\Models\Project;
 use App\Models\Task;
@@ -31,6 +32,9 @@ $I->assertSame(0, Task::all()->count());
 //
 ///////////////////////////////////////////////////////
 
+// disable ACL access check
+Config::set('jsonapi.acl.check_access', false);
+
 $I->haveHttpHeader('Content-Type', 'application/vnd.api+json');
 $I->haveHttpHeader('Accept', 'application/vnd.api+json');
 
@@ -44,28 +48,28 @@ $I->sendPOST('/api/users', Fixtures::get('user'));
 $I->expect("should create 1 new record");
 $I->assertSame(1, User::all()->count());
 
-// ====================================================
-// create project
-// ====================================================
-
-$I->comment("when we create a project");
-$I->sendPOST('/api/projects', Fixtures::get('project'));
-
-$I->expect("should create 1 new record");
-$I->assertSame(1, Project::all()->count());
-
-// ====================================================
-// create task
-// ====================================================
-
-$project_1_id = Project::all()->toArray()[0]['id'];
-$task = Fixtures::get('task');
-$task['data']['attributes']['project_id'] = $project_1_id;
-
-// ----------------------------------------------------
-
-$I->comment("when we create a project");
-$I->sendPOST('/api/tasks', $task);
-
-$I->expect("should create 1 new record");
-$I->assertSame(1, Task::all()->count());
+//// ====================================================
+//// create project
+//// ====================================================
+//
+//$I->comment("when we create a project");
+//$I->sendPOST('/api/projects', Fixtures::get('project'));
+//
+//$I->expect("should create 1 new record");
+//$I->assertSame(1, Project::all()->count());
+//
+//// ====================================================
+//// create task
+//// ====================================================
+//
+//$project_1_id = Project::all()->toArray()[0]['id'];
+//$task = Fixtures::get('task');
+//$task['data']['attributes']['project_id'] = $project_1_id;
+//
+//// ----------------------------------------------------
+//
+//$I->comment("when we create a project");
+//$I->sendPOST('/api/tasks', $task);
+//
+//$I->expect("should create 1 new record");
+//$I->assertSame(1, Task::all()->count());

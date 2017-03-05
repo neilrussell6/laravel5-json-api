@@ -24,6 +24,15 @@ class Laravel5JsonApiServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../config/jsonapi.php' => config_path('jsonapi.php')
         ], 'config');
+        $this->publishes([
+            __DIR__ . '/../config/jsonapi_acl_seeder.php' => config_path('jsonapi_acl_seeder.php')
+        ], 'config');
+        $this->publishes([
+            __DIR__ . '/../database/migrations/2017_03_02_085402_json_api_acl_update_roles_table.php' => database_path('migrations/2017_03_02_085402_json_api_acl_update_roles_table.php')
+        ], 'migrations');
+        $this->publishes([
+            __DIR__ . '/../database/seeds/JsonApiAclSeeder.php' => database_path('seeds/JsonApiAclSeeder.php')
+        ], 'seeds');
 
         $factory->macro('collection', function (Request $request, Collection $collection, $model, $status = 200, $include_resource_object_links = true, $is_minimal = false) use ($factory) {
 
@@ -86,6 +95,11 @@ class Laravel5JsonApiServiceProvider extends ServiceProvider
         App::bind('jsonapiutils', function()
         {
             return new \Neilrussell6\Laravel5JsonApi\Utils\JsonApiUtils;
+        });
+
+        App::bind('jsonapiaclutils', function()
+        {
+            return new \Neilrussell6\Laravel5JsonApi\Utils\JsonApiAclUtils;
         });
     }
 }

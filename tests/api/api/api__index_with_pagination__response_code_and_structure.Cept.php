@@ -1,9 +1,10 @@
 <?php
 
+use Illuminate\Support\Facades\Config;
+use Codeception\Util\HttpCode;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
-use Codeception\Util\HttpCode;
 
 $I = new ApiTester($scenario);
 
@@ -33,6 +34,9 @@ $I->assertSame(10, Task::all()->count());
 // * test response codes & structure
 //
 ///////////////////////////////////////////////////////
+
+// disable ACL access check
+Config::set('jsonapi.acl.check_access', false);
 
 $I->haveHttpHeader('Content-Type', 'application/vnd.api+json');
 $I->haveHttpHeader('Accept', 'application/vnd.api+json');

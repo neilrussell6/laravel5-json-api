@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Config;
 use Codeception\Util\Fixtures;
 use App\Models\Project;
 use App\Models\Task;
@@ -30,6 +31,9 @@ $I->assertSame(0, Task::all()->count());
 // * test response values
 //
 ///////////////////////////////////////////////////////
+
+// disable ACL access check
+Config::set('jsonapi.acl.check_access', false);
 
 $I->haveHttpHeader('Content-Type', 'application/vnd.api+json');
 $I->haveHttpHeader('Accept', 'application/vnd.api+json');

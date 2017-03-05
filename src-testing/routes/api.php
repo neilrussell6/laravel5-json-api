@@ -74,40 +74,40 @@ Route::group(['middleware' => [ 'api', 'jsonapi' ], 'namespace' => 'Api'], funct
         //     and not just updating those users that are flagged with is_editor
         //     so no PATCH requests to editors
         //     if we wanted to support PATCH requests to editors then we would have to have to return
-        Route::get('projects/{id}/relationships/editors', [ 'as' => 'projects.editors.relationship.index', 'uses' => 'ProjectsController@indexRelated', 'is_minimal' => true ]);
+        Route::get('projects/{id}/relationships/editors', [ 'as' => 'projects.relationships.editors.index', 'uses' => 'ProjectsController@indexRelated', 'is_minimal' => true ]);
 
         // ... projects : owner
-        Route::get('projects/{id}/relationships/owner', [ 'as' => 'projects.owner.relationship.show', 'uses' => 'ProjectsController@showRelated', 'is_minimal' => true ]);
-        Route::patch('projects/{id}/relationships/owner', [ 'as' => 'projects.owner.relationship.update', 'uses' => 'ProjectsController@updateRelated', 'is_minimal' => true ]);
-        //    Route::delete('projects/{project}/relationships/owner', [ 'as' => 'projects.owner.relationship.destroy', 'uses' => 'ProjectsController@owner' ]);
+        Route::get('projects/{id}/relationships/owner', [ 'as' => 'projects.relationships.owner.show', 'uses' => 'ProjectsController@showRelated', 'is_minimal' => true ]);
+        Route::patch('projects/{id}/relationships/owner', [ 'as' => 'projects.relationships.owner.update', 'uses' => 'ProjectsController@updateRelated', 'is_minimal' => true ]);
+        //    Route::delete('projects/{project}/relationships/owner', [ 'as' => 'projects.relationships.owner.destroy', 'uses' => 'ProjectsController@owner' ]);
 
         // ... projects : tasks
-        Route::get('projects/{id}/relationships/tasks', [ 'as' => 'projects.tasks.relationship.index', 'uses' => 'ProjectsController@indexRelated', 'is_minimal' => true ]);
-        Route::patch('projects/{id}/relationships/tasks', [ 'as' => 'projects.tasks.relationship.update', 'uses' => 'ProjectsController@updateRelated', 'is_minimal' => true ]);
+        Route::get('projects/{id}/relationships/tasks', [ 'as' => 'projects.relationships.tasks.index', 'uses' => 'ProjectsController@indexRelated', 'is_minimal' => true ]);
+        Route::patch('projects/{id}/relationships/tasks', [ 'as' => 'projects.relationships.tasks.update', 'uses' => 'ProjectsController@updateRelated', 'is_minimal' => true ]);
 
         // ... projects : users
-        Route::get('projects/{id}/relationships/users', [ 'as' => 'projects.users.relationship.index', 'uses' => 'ProjectsController@indexRelated', 'is_minimal' => true ]);
-        Route::patch('projects/{id}/relationships/users', [ 'as' => 'projects.users.relationship.update', 'uses' => 'ProjectsController@updateRelated', 'is_minimal' => true ]);
-        Route::post('projects/{id}/relationships/users', [ 'as' => 'projects.users.relationship.store', 'uses' => 'ProjectsController@storeRelated', 'is_minimal' => true ]);
-        Route::delete('projects/{id}/relationships/users', [ 'as' => 'projects.users.relationship.destroy', 'uses' => 'ProjectsController@destroyRelated', 'is_minimal' => true ]);
+        Route::get('projects/{id}/relationships/users', [ 'as' => 'projects.relationships.users.index', 'uses' => 'ProjectsController@indexRelated', 'is_minimal' => true ]);
+        Route::patch('projects/{id}/relationships/users', [ 'as' => 'projects.relationships.users.update', 'uses' => 'ProjectsController@updateRelated', 'is_minimal' => true ]);
+        Route::post('projects/{id}/relationships/users', [ 'as' => 'projects.relationships.users.store', 'uses' => 'ProjectsController@storeRelated', 'is_minimal' => true ]);
+        Route::delete('projects/{id}/relationships/users', [ 'as' => 'projects.relationships.users.destroy', 'uses' => 'ProjectsController@destroyRelated', 'is_minimal' => true ]);
 
         // ... tasks : editors
-        Route::get('tasks/{id}/relationships/editors', [ 'as' => 'tasks.editors.relationship.index', 'uses' => 'TasksController@indexRelated', 'is_minimal' => true ]);
+        Route::get('tasks/{id}/relationships/editors', [ 'as' => 'tasks.relationships.editors.index', 'uses' => 'TasksController@indexRelated', 'is_minimal' => true ]);
 
         // ... tasks : owner
-        Route::get('tasks/{id}/relationships/owner', [ 'as' => 'tasks.owner.relationship.show', 'uses' => 'TasksController@showRelated', 'is_minimal' => true ]);
-        Route::patch('tasks/{id}/relationships/owner', [ 'as' => 'tasks.owner.relationship.update', 'uses' => 'TasksController@updateRelated', 'is_minimal' => true ]);
+        Route::get('tasks/{id}/relationships/owner', [ 'as' => 'tasks.relationships.owner.show', 'uses' => 'TasksController@showRelated', 'is_minimal' => true ]);
+        Route::patch('tasks/{id}/relationships/owner', [ 'as' => 'tasks.relationships.owner.update', 'uses' => 'TasksController@updateRelated', 'is_minimal' => true ]);
 
         // ... tasks : project
-        Route::get('tasks/{id}/relationships/project', [ 'as' => 'tasks.project.relationship.show', 'uses' => 'TasksController@showRelated', 'is_minimal' => true ]);
-        Route::patch('tasks/{id}/relationships/project', [ 'as' => 'tasks.project.relationship.update', 'uses' => 'TasksController@updateRelated', 'is_minimal' => true ]);
+        Route::get('tasks/{id}/relationships/project', [ 'as' => 'tasks.relationships.project.show', 'uses' => 'TasksController@showRelated', 'is_minimal' => true ]);
+        Route::patch('tasks/{id}/relationships/project', [ 'as' => 'tasks.relationships.project.update', 'uses' => 'TasksController@updateRelated', 'is_minimal' => true ]);
 
         // ... tasks : users
-        Route::get('tasks/{id}/relationships/users', [ 'as' => 'tasks.users.relationship.index', 'uses' => 'TasksController@indexRelated', 'is_minimal' => true ]);
+        Route::get('tasks/{id}/relationships/users', [ 'as' => 'tasks.relationships.users.index', 'uses' => 'TasksController@indexRelated', 'is_minimal' => true ]);
 
         // ... users
-        Route::get('users/{id}/relationships/projects', [ 'as' => 'users.projects.relationship.index', 'uses' => 'UsersController@indexRelated', 'is_minimal' => true ]);
-        Route::get('users/{id}/relationships/tasks', [ 'as' => 'users.tasks.relationship.index', 'uses' => 'UsersController@indexRelated', 'is_minimal' => true ]);
+        Route::get('users/{id}/relationships/projects', [ 'as' => 'users.relationships.projects.index', 'uses' => 'UsersController@indexRelated', 'is_minimal' => true ]);
+        Route::get('users/{id}/relationships/tasks', [ 'as' => 'users.relationships.tasks.index', 'uses' => 'UsersController@indexRelated', 'is_minimal' => true ]);
 
     });
 });

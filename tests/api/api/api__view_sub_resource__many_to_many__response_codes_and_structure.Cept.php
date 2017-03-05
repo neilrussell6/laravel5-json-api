@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Config;
 use Codeception\Util\HttpCode;
 use App\Models\Project;
 use App\Models\Task;
@@ -61,6 +62,9 @@ Task::find(1)->editors()->sync([2 => ['is_editor' => true], 3 => ['is_editor' =>
 // * test response codes & structure
 //
 ///////////////////////////////////////////////////////
+
+// disable ACL access check
+Config::set('jsonapi.acl.check_access', false);
 
 $I->haveHttpHeader('Content-Type', 'application/vnd.api+json');
 $I->haveHttpHeader('Accept', 'application/vnd.api+json');

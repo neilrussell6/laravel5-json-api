@@ -1,6 +1,6 @@
 <?php
 
-use Codeception\Util\Fixtures;
+use Illuminate\Support\Facades\Config;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
@@ -54,6 +54,9 @@ $task_2_id = factory(Task::class, 1)->create(['user_id' => $user_2_id])->toArray
 // * test data is updated
 //
 ///////////////////////////////////////////////////////
+
+// disable ACL access check
+Config::set('jsonapi.acl.check_access', false);
 
 $I->haveHttpHeader('Content-Type', 'application/vnd.api+json');
 $I->haveHttpHeader('Accept', 'application/vnd.api+json');
