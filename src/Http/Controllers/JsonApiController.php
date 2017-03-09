@@ -1,5 +1,7 @@
 <?php namespace Neilrussell6\Laravel5JsonApi\Http\Controllers;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
@@ -328,8 +330,8 @@ class JsonApiController extends Controller
 
         if (array_key_exists('relationships', $request_data['data'])) {
             $relationships = new Collection($request_data['data']['relationships']);
-            $relationships->each(function($relationship, $key) use ($resource) {
-                $this->updateRelatedHelper($relationship['data'], $key, $resource, true);
+            $relationships->each(function($relationship, $key) use ($request, $resource) {
+                $this->updateRelatedHelper($request, $relationship['data'], $key, $resource, true);
             });
         }
 
@@ -453,7 +455,6 @@ class JsonApiController extends Controller
 
         // ... indexed array of related resource objects
         else {
-
             $request_data_validation = array_reduce($request_data['data'], function ($carry, $resource_object) use ($related_model) {
                 $validation = $this->validateRequestResourceObject($resource_object, $related_model, null, false);
                 return !empty($validation['errors']) ? array_merge_recursive($carry, $validation) : $carry;
@@ -602,7 +603,6 @@ class JsonApiController extends Controller
 
         // ... indexed array of resource objects (including HasOneOrMany)
         else {
-
             $related_ids = array_column($request_data['data'], 'id');
             $primary_resource->{$relationship_name}()->detach($related_ids);
         }
@@ -651,7 +651,7 @@ class JsonApiController extends Controller
         }
 
         // validate request data : data.id
-        else if (array_key_exists('id', $resource_object) && !is_null($id) && $resource_object['id'] !== intval($id)) {
+        else if (array_key_exists('id', $resource_object) && !is_null($id) && intval($resource_object['id']) !== intval($id)) {
 
             $result['error_code'] = 409;
             $result['errors'] = JsonApiUtils::makeErrorObjects([[

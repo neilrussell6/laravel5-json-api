@@ -167,7 +167,7 @@ class JsonApiUtils
 
         // don't include type, id or foreign keys in attributes
         $filtered_collection = $collection->filter(function($item, $key) {
-            return !in_array($key, ['id', 'type', 'pivot']) && preg_match('/(.*?)\_id$/', $key) !== 1;
+            return !in_array($key, ['id', 'type', 'pivot']) && preg_match('/(.*?)\_id$/', $key) !== 1 && !is_array($item);
         });
 
         // type & id
