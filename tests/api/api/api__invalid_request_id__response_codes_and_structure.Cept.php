@@ -71,14 +71,14 @@ $user_wrong_id = Fixtures::get('user');
 $project_wrong_id = Fixtures::get('project');
 $task_wrong_id = Fixtures::get('task');
 
-$user_wrong_id['data']['id'] = 'not_users';
-$project_wrong_id['data']['id'] = 'not_projects';
-$task_wrong_id['data']['id'] = 'not_tasks';
+$user_wrong_id['data']['id'] = $user_1_id + 1;
+$project_wrong_id['data']['id'] = $project_1_id + 1;
+$task_wrong_id['data']['id'] = $task_1_id + 1;
 
 $requests =  [
-    [ 'PATCH', "/api/users/{$user_1_id}", array_merge_recursive($user_wrong_id, [ 'data' => [ 'id' => $user_1_id + 1 ] ]) ],
-    [ 'PATCH', "/api/projects/{ $project_1_id}", array_merge_recursive($project_wrong_id, [ 'data' => [ 'id' => $project_1_id + 1 ] ]) ],
-    [ 'PATCH', "/api/tasks/{$task_1_id}", array_merge_recursive($task_wrong_id, [ 'data' => [ 'id' => $task_1_id + 1 ] ]) ],
+    [ 'PATCH', "/api/users/{$user_1_id}", $user_wrong_id ],
+    [ 'PATCH', "/api/projects/{ $project_1_id}", $project_wrong_id ],
+    [ 'PATCH', "/api/tasks/{$task_1_id}", $task_wrong_id ],
 ];
 
 $I->sendMultiple($requests, function($request) use ($I) {
