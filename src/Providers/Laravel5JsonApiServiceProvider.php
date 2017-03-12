@@ -56,7 +56,7 @@ class Laravel5JsonApiServiceProvider extends ServiceProvider
             $base_url = $request->url();
             $top_level_links = JsonApiUtils::makeTopLevelLinksObject($base_url, $data['id']);
             $resource_object_links = $include_resource_object_links ? JsonApiUtils::makeResourceObjectLinksObject($base_url, $data['id']) : null;
-            $include_relationships = preg_match('/\/\w+\/\d+\/\w+$/', $base_url) === 0 && preg_match('/\/\w+\/\d+\/relationships\/\w+$/', $base_url) === 0; // don't include relationships for sub resource or relationships request
+            $include_relationships = preg_match('/\/\w+\/\d+\/\w+$/', $base_url) === 0 && preg_match('/\/\w+\/\d+\/relationships\/\w+$/', $base_url) === 0 && preg_match('/access_tokens/', $base_url) === 0; // don't include relationships for sub resource, relationships or access_tokens request
 
             $result = [
                 'links' => $top_level_links,
