@@ -306,6 +306,10 @@ class JsonApiUtils
         else if (preg_match('/\/\w+\/\d+$/', $request_base_url)) {
             $result['self'] = $request_base_url;
         }
+        // specific primary resource without id
+        else if (!preg_match('/\/\d+\//', $request_base_url)) {
+            $result['self'] = $request_base_url;
+        }
         // any other response
         else {
             if (is_null($resource_id)) {
